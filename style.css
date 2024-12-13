@@ -28,9 +28,9 @@ body {
 }
 
 /* For small devices like phones */
-@media (max-width: 480px) {
+@media (max-width: 390px) {
     #container {
-        height: 90vh; /* Use a percentage of the viewport height */
+        height: 100vh; /* Use a percentage of the viewport height */
         width: 100vw; /* Use the full viewport width */
     }
 }
@@ -38,8 +38,8 @@ body {
 /* For tablets */
 @media (max-width: 768px) {
     #container {
-        height: 85vh;
-        width: 75vw;
+        height: 100vh;
+        width: 100vw;
     }
 }
 

@@ -31,7 +31,7 @@ let bottompipe_img;
 // Physics
 let velocityX = -2;
 let velocityY = 0;
-let gravity = 0.3;
+let gravity = 0.22;
 let gameover = false;
 
 // Scoring

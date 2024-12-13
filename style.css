@@ -1,0 +1,52 @@
+body {
+    font-family: 'Courier New', 'Courier', 'monospace';
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Make the body fill the viewport height */
+    margin: 0;
+    background-color: #87CEEB; /* Add a fallback background color */
+}
+
+#container {
+    height: 580px;
+    width: 360px;
+    position: relative;
+    max-width: 90vw; /* Adjust width to fit smaller screens */
+    max-height: 90vh; /* Adjust height to fit smaller screens */
+    border: 2px solid #000; /* Optional: Adds a border for clarity */
+    overflow: hidden; /* Ensures content doesn't overflow */
+}
+
+#board {
+    background-image: url(flappybirdbg.png);
+    background-size: cover; /* Ensures the background scales properly */
+    background-position: center; /* Centers the background image */
+    height: 100%;
+    width: 100%;
+}
+
+/* For small devices like phones */
+@media (max-width: 480px) {
+    #container {
+        height: 90vh; /* Use a percentage of the viewport height */
+        width: 100vw; /* Use the full viewport width */
+    }
+}
+
+/* For tablets */
+@media (max-width: 768px) {
+    #container {
+        height: 85vh;
+        width: 75vw;
+    }
+}
+
+/* For large screens */
+@media (min-width: 1024px) {
+    #container {
+        height: 580px; /* Default height */
+        width: 360px;  /* Default width */
+    }
+}

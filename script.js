@@ -86,9 +86,6 @@ function resizeCanvas() {
 
 function update() {
     if (gameover) {
-        Context.fillStyle = "#871717";
-        Context.font = "15px Arial";
-        Context.fillText("Game Over! Press Space or Click to Restart", b_width / 8, b_height / 2);
         return;
     }
 
@@ -199,13 +196,45 @@ function endGame() {
     if (score > highscore) {
         highscore = score;
     }
+
+    // Show game-over screen with restart button
+    const overlay = document.createElement("div");
+    overlay.id = "game-over-overlay";
+    overlay.style.position = "absolute";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0, 0, 0, 0.7)";
+    overlay.style.color = "white";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.innerHTML = `
+        <div style="text-align: center;">
+            <h1>Game Over</h1>
+            <p>Score: ${score}</p>
+            <p>Highscore: ${highscore}</p>
+            <button onclick="restartGame()" style="padding: 10px 20px; font-size: 18px;">Restart</button>
+        </div>
+    `;
+    document.getElementById("container").appendChild(overlay);
 }
 
 function restartGame() {
+    // Remove the overlay
+    const overlay = document.getElementById("game-over-overlay");
+    if (overlay) {
+        overlay.remove();
+    }
+
+    // Reset game variables
     gameover = false;
     bird.y = b_height / 2;
     velocityY = 0;
     pipeArray = [];
     score = 0;
+
+    // Start the game loop
     requestAnimationFrame(update);
 }

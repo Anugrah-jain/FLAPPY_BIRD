@@ -145,7 +145,7 @@ function placePipe() {
     }
 
     let randomPipeY = pipeY - pipe_height / 4 - Math.random() * (pipe_height / 2);
-    let opening_space = board.height / 2.3; // Space between top and bottom pipes
+    let opening_space = board.height / 8; // Space between top and bottom pipes
 
     let topPipe = {
         img: toppipe_img,

@@ -31,7 +31,7 @@ let bottompipe_img;
 // Physics
 let velocityX = -2;
 let velocityY = 0;
-let gravity = 0.26;
+let gravity = 0.3;
 let gameover = false;
 
 // Scoring
@@ -67,31 +67,7 @@ window.onload = function () {
 };
 
 function update() {
-    if (gameover) {
-        // Show game-over screen with restart button
-        const overlay = document.createElement("div");
-        overlay.id = "game-over-overlay";
-        overlay.style.position = "absolute";
-        overlay.style.top = "0";
-        overlay.style.left = "0";
-        overlay.style.width = "100%";
-        overlay.style.height = "100%";
-        overlay.style.background = "rgba(0, 0, 0, 0.7)";
-        overlay.style.color = "white";
-        overlay.style.display = "flex";
-        overlay.style.alignItems = "center";
-        overlay.style.justifyContent = "center";
-        overlay.innerHTML = `
-            <div style="text-align: center;">
-                <h1>Game Over</h1>
-                <p>Score: ${Math.floor(score)}</p>
-                <p>Highscore: ${highscore}</p>
-                <button onclick="restartGame()" style="padding: 10px 20px; font-size: 18px;">Restart</button>
-            </div>
-        `;
-        document.getElementById("container").appendChild(overlay);
-        return;
-    }
+    if (gameover) return;
 
     requestAnimationFrame(update);
     Context.clearRect(0, 0, b_width, b_height);
@@ -139,18 +115,21 @@ function update() {
     }
 
     // Increase difficulty every 20 points, up to 100
-    if (score >= 20 && score < 40) {
-        velocityX = -3; // Increase pipe speed
-        gravity = 0.35;  // Increase gravity
-    } else if (score >= 40 && score < 60) {
-        velocityX = -4; // Further increase speed
-        gravity = 0.4;   // Further increase gravity
-    } else if (score >= 60 && score < 80) {
-        velocityX = -5; // Further increase speed
-        gravity = 0.45;  // Further increase gravity
-    } else if (score >= 80 && score < 100) {
-        velocityX = -6; // Further increase speed
-        gravity = 0.5;  // Further increase gravity
+    if (score >= 10 && score < 20) {
+        velocityX = -3;
+        gravity = 0.35;
+    } else if (score >= 20 && score < 30) {
+        velocityX = -4;
+        gravity = 0.4;
+    } else if (score >= 30 && score < 40) {
+        velocityX = -5;
+        gravity = 0.45;
+    } else if (score >= 40 && score < 50) {
+        velocityX = -6;
+        gravity = 0.5;
+    } else if(score >= 50) {
+        velocityX = -8;
+        gravity = 0.6;
     }
 
     // Display the score
@@ -218,6 +197,29 @@ function endGame() {
     if (score > highscore) {
         highscore = Math.floor(score);
     }
+
+    // Show game-over screen with restart button
+    const overlay = document.createElement("div");
+    overlay.id = "game-over-overlay";
+    overlay.style.position = "absolute";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0, 0, 0, 0.7)";
+    overlay.style.color = "white";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.innerHTML = `
+        <div style="text-align: center;">
+            <h1>Game Over</h1>
+            <p>Score: ${Math.floor(score)}</p>
+            <p>Highscore: ${highscore}</p>
+            <button onclick="restartGame()" style="padding: 10px 20px; font-size: 18px;">Restart</button>
+        </div>
+    `;
+    document.getElementById("container").appendChild(overlay);
 }
 
 function restartGame() {
@@ -226,10 +228,10 @@ function restartGame() {
     velocityY = 0;
     pipeArray = [];
     score = 0;
-    velocityX = -2; // Reset speed
-    gravity = 0.3;  // Reset gravity
+    velocityX = -2;
+    gravity = 0.3;
 
-    // Remove the game-over overlay if it exists
+    // Remove the game-over overlay
     const overlay = document.getElementById("game-over-overlay");
     if (overlay) {
         overlay.remove();

@@ -31,7 +31,7 @@ let bottompipe_img;
 // Physics
 let velocityX = -2;
 let velocityY = 0;
-let gravity = 0.22;
+let gravity = 0.3;
 let gameover = false;
 
 // Scoring
@@ -40,8 +40,8 @@ let highscore = 0;
 
 window.onload = function () {
     board = document.getElementById("board");
-    resizeCanvas();
-
+    board.height = b_height;
+    board.width = b_width;
     Context = board.getContext("2d");
 
     // Load Images
@@ -64,28 +64,32 @@ window.onload = function () {
     // Event listeners for bird movement
     document.addEventListener("keydown", movebird);
     board.addEventListener("click", jump);
-
-    // Adjust canvas on window resize
-    window.addEventListener("resize", resizeCanvas);
 };
-
-function resizeCanvas() {
-    const container = document.getElementById("container");
-    board.width = container.offsetWidth;
-    board.height = container.offsetHeight;
-    b_width = board.width;
-    b_height = board.height;
-
-    // Update bird's position based on new dimensions
-    bird.x = b_width / 8;
-    bird.y = b_height / 2;
-
-    // Adjust pipes
-    pipeArray = [];
-}
 
 function update() {
     if (gameover) {
+        // Show game-over screen with restart button
+        const overlay = document.createElement("div");
+        overlay.id = "game-over-overlay";
+        overlay.style.position = "absolute";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.background = "rgba(0, 0, 0, 0.7)";
+        overlay.style.color = "white";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.innerHTML = `
+            <div style="text-align: center;">
+                <h1>Game Over</h1>
+                <p>Score: ${Math.floor(score)}</p>
+                <p>Highscore: ${highscore}</p>
+                <button onclick="restartGame()" style="padding: 10px 20px; font-size: 18px;">Restart</button>
+            </div>
+        `;
+        document.getElementById("container").appendChild(overlay);
         return;
     }
 
@@ -107,8 +111,13 @@ function update() {
         velocityY = 0;
     }
 
-    // Draw the bird
-    Context.drawImage(bird_img, bird.x, bird.y, bird.width, bird.height);
+    // Draw the bird with rotation
+    Context.save();
+    Context.translate(bird.x + bird.width / 2, bird.y + bird.height / 2);
+    let angle = Math.min(Math.max(velocityY / 10, -0.5), 0.5);
+    Context.rotate(angle);
+    Context.drawImage(bird_img, -bird.width / 2, -bird.height / 2, bird.width, bird.height);
+    Context.restore();
 
     // Update and draw pipes
     for (let i = 0; i < pipeArray.length; i++) {
@@ -116,7 +125,7 @@ function update() {
         pipe.x += velocityX;
         Context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
-        // Check for collision with the current pipe
+        // Check for collision
         if (detect_collision(bird, pipe)) {
             endGame();
             return;
@@ -129,10 +138,25 @@ function update() {
         }
     }
 
+    // Increase difficulty every 20 points, up to 100
+    if (score >= 20 && score < 40) {
+        velocityX = -3; // Increase pipe speed
+        gravity = 0.35;  // Increase gravity
+    } else if (score >= 40 && score < 60) {
+        velocityX = -4; // Further increase speed
+        gravity = 0.4;   // Further increase gravity
+    } else if (score >= 60 && score < 80) {
+        velocityX = -5; // Further increase speed
+        gravity = 0.45;  // Further increase gravity
+    } else if (score >= 80 && score < 100) {
+        velocityX = -6; // Further increase speed
+        gravity = 0.5;  // Further increase gravity
+    }
+
     // Display the score
     Context.fillStyle = "black";
     Context.font = "20px Arial";
-    Context.fillText(`Score: ${score}`, 10, 25);
+    Context.fillText(`Score: ${Math.floor(score)}`, 10, 25);
     Context.fillText(`Highscore: ${highscore}`, 10, 50);
 
     // Remove off-screen pipes
@@ -140,12 +164,10 @@ function update() {
 }
 
 function placePipe() {
-    if (gameover) {
-        return;
-    }
+    if (gameover) return;
 
     let randomPipeY = pipeY - pipe_height / 4 - Math.random() * (pipe_height / 2);
-    let opening_space = board.height / 3; // Space between top and bottom pipes
+    let opening_space = b_height / 4;
 
     let topPipe = {
         img: toppipe_img,
@@ -194,47 +216,24 @@ function detect_collision(a, b) {
 function endGame() {
     gameover = true;
     if (score > highscore) {
-        highscore = score;
+        highscore = Math.floor(score);
     }
-
-    // Show game-over screen with restart button
-    const overlay = document.createElement("div");
-    overlay.id = "game-over-overlay";
-    overlay.style.position = "absolute";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.background = "rgba(0, 0, 0, 0.7)";
-    overlay.style.color = "white";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.innerHTML = `
-        <div style="text-align: center;">
-            <h1>Game Over</h1>
-            <p>Score: ${score}</p>
-            <p>Highscore: ${highscore}</p>
-            <button onclick="restartGame()" style="padding: 10px 20px; font-size: 18px;">Restart</button>
-        </div>
-    `;
-    document.getElementById("container").appendChild(overlay);
 }
 
 function restartGame() {
-    // Remove the overlay
-    const overlay = document.getElementById("game-over-overlay");
-    if (overlay) {
-        overlay.remove();
-    }
-
-    // Reset game variables
     gameover = false;
     bird.y = b_height / 2;
     velocityY = 0;
     pipeArray = [];
     score = 0;
+    velocityX = -2; // Reset speed
+    gravity = 0.3;  // Reset gravity
 
-    // Start the game loop
+    // Remove the game-over overlay if it exists
+    const overlay = document.getElementById("game-over-overlay");
+    if (overlay) {
+        overlay.remove();
+    }
+
     requestAnimationFrame(update);
 }

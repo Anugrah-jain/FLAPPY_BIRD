@@ -31,7 +31,7 @@ let bottompipe_img;
 // Physics
 let velocityX = -2;
 let velocityY = 0;
-let gravity = 0.3;
+let gravity = 0.26;
 let gameover = false;
 
 // Scoring
@@ -167,7 +167,7 @@ function placePipe() {
     if (gameover) return;
 
     let randomPipeY = pipeY - pipe_height / 4 - Math.random() * (pipe_height / 2);
-    let opening_space = b_height / 4;
+    let opening_space = b_height / 3;
 
     let topPipe = {
         img: toppipe_img,

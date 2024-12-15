@@ -13,8 +13,8 @@ body {
     height: 580px;
     width: 360px;
     position: relative;
-    max-width: 100vw; /* Adjust width to fit smaller screens */
-    max-height: 100vh; /* Adjust height to fit smaller screens */
+    max-width: 96vw; /* Adjust width to fit smaller screens */
+    max-height: 96vh; /* Adjust height to fit smaller screens */
     border: 2px solid #000; /* Optional: Adds a border for clarity */
     overflow: hidden; /* Ensures content doesn't overflow */
 }
